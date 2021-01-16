@@ -39,7 +39,6 @@ public class Gui extends JFrame {
         ir.takeScreensBoth((int) bothSpinner.getValue(), 30);
         ir.editImageBorderDirectory();
         ir.ocrImageVeloDirectory();
-        System.out.println("Hello");
         System.out.println("Finished");
     }
 
