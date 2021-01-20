@@ -14,41 +14,54 @@ import java.util.concurrent.TimeUnit;
  */
 public class Gui extends JFrame {
 
-    public static ImageProcessing ir = new ImageProcessing();
+    public static ScreenshotHandler sH = new ScreenshotHandler();
+    public static ImageEditing iE = new ImageEditing();
+
     public Gui() {
         initComponents();
     }
 
 
-    private void sBorderButtonActionPerformed(ActionEvent e) {
+    private void takeScreenshotsActionPerformed(ActionEvent e) {
         waitFor(2);
-        ir.takeScreensBrd((int)borderSpinner.getValue(),10);
-        ir.editImageBorderDirectory();
+
+        sH.takeStockScreenshot((int) borderSpinner.getValue());
+        sH.cutoutBorderImage();
+        sH.cutoutVelocityImage();
+
         System.out.println("Finished");
     }
 
-    private void sVelocityButtonActionPerformed(ActionEvent e) {
+    private void processImagesActionPerformed(ActionEvent e) {
         waitFor(2);
-        ir.takeScreensVelo((int) velocitySpinner.getValue(),20);
-        ir.ocrImageVeloDirectory();
+
+        iE.markSpots();
+
+        //ir.takeScreensVelo((int) velocitySpinner.getValue(),20);
+        //ir.ocrImageVeloDirectory();
         System.out.println("Finished");
     }
 
-    private void runAllButtonActionPerformed(ActionEvent e) {
-        waitFor(2);
-        ir.takeScreensBoth((int) bothSpinner.getValue(), 30);
-        ir.editImageBorderDirectory();
-        ir.ocrImageVeloDirectory();
-        System.out.println("Finished");
-    }
+    private void deleteImagesButtonActionPerformed(ActionEvent e) {
 
-    private void deletImagesButtonActionPerformed(ActionEvent e) {
-        ir.deleteImagesB();
-        System.out.println("All Images from track are deleted");
-        ir.deleteImagesV();
-        System.out.println("All Images from velocity are deleted");
+        if (sH.deleteImagesB()) {
+            System.out.println("All Images from borderScreens are deleted");
+        } else {
+            System.err.println("Images in borderScreens could not be deleted");
+        }
+
+        if (sH.deleteImagesV()) {
+            System.out.println("All Images from velocityScreens are deleted");
+        } else {
+            System.err.println("Images in velocityScreens could not be deleted");
+        }
+
+        if (sH.deleteImagesS()) {
+            System.out.println("All Images from stockImages are deleted");
+        } else {
+            System.err.println("Images in stockImages could not be deleted");
+        }
     }
-    
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
@@ -64,28 +77,19 @@ public class Gui extends JFrame {
         scanVelocityPanel = new JPanel();
         sVelocityLablel = new JLabel();
         hSpacer3 = new JPanel(null);
-        runAllPanel = new JPanel();
-        runAllLablel = new JLabel();
-        hSpacer4 = new JPanel(null);
         panel8 = new JPanel();
         separator3 = new JSeparator();
         panel9 = new JPanel();
         borderSpinner = new JSpinner();
-        sBorderButton = new JButton();
+        takeScreenshotsButton = new JButton();
         separator6 = new JSeparator();
         separator2 = new JSeparator();
         panel10 = new JPanel();
-        velocitySpinner = new JSpinner();
-        sVelocityButton = new JButton();
-        separator1 = new JSeparator();
-        separator5 = new JSeparator();
-        panel11 = new JPanel();
-        bothSpinner = new JSpinner();
-        runAllButton = new JButton();
+        processImagesButton = new JButton();
         separator4 = new JSeparator();
         panel5 = new JPanel();
         hSpacer5 = new JPanel(null);
-        deletImagesButton = new JButton();
+        deleteImagesButton = new JButton();
         hSpacer6 = new JPanel(null);
 
         //======== this ========
@@ -96,13 +100,18 @@ public class Gui extends JFrame {
 
         //======== panel3 ========
         {
-            panel3.setBorder (new javax. swing. border. CompoundBorder( new javax .swing .border .TitledBorder (new javax.
-            swing. border. EmptyBorder( 0, 0, 0, 0) , "JF\u006frmDes\u0069gner \u0045valua\u0074ion", javax. swing. border
-            . TitledBorder. CENTER, javax. swing. border. TitledBorder. BOTTOM, new java .awt .Font ("D\u0069alog"
-            ,java .awt .Font .BOLD ,12 ), java. awt. Color. red) ,panel3. getBorder
-            ( )) ); panel3. addPropertyChangeListener (new java. beans. PropertyChangeListener( ){ @Override public void propertyChange (java
-            .beans .PropertyChangeEvent e) {if ("\u0062order" .equals (e .getPropertyName () )) throw new RuntimeException
-            ( ); }} );
+            panel3.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder
+                    (0, 0, 0, 0), "JF\u006frmD\u0065sig\u006eer \u0045val\u0075ati\u006fn", javax.swing.border.TitledBorder.CENTER, javax.swing.border
+                    .TitledBorder.BOTTOM, new java.awt.Font("Dia\u006cog", java.awt.Font.BOLD, 12), java.awt
+                    .Color.red), panel3.getBorder()));
+            panel3.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+                @Override
+                public void
+                propertyChange(java.beans.PropertyChangeEvent e) {
+                    if ("\u0062ord\u0065r".equals(e.getPropertyName())) throw new RuntimeException()
+                            ;
+                }
+            });
             panel3.setLayout(new BoxLayout(panel3, BoxLayout.Y_AXIS));
 
             //======== panel1 ========
@@ -128,7 +137,7 @@ public class Gui extends JFrame {
                         scanBorderPanel.setLayout(new BoxLayout(scanBorderPanel, BoxLayout.X_AXIS));
 
                         //---- sBorderLablel ----
-                        sBorderLablel.setText("Scan border:");
+                        sBorderLablel.setText("Take Screenshots");
                         scanBorderPanel.add(sBorderLablel);
                         scanBorderPanel.add(hSpacer2);
                     }
@@ -139,22 +148,11 @@ public class Gui extends JFrame {
                         scanVelocityPanel.setLayout(new BoxLayout(scanVelocityPanel, BoxLayout.X_AXIS));
 
                         //---- sVelocityLablel ----
-                        sVelocityLablel.setText("Scan velocity:");
+                        sVelocityLablel.setText("Process Images");
                         scanVelocityPanel.add(sVelocityLablel);
                         scanVelocityPanel.add(hSpacer3);
                     }
                     panelContainer.add(scanVelocityPanel);
-
-                    //======== runAllPanel ========
-                    {
-                        runAllPanel.setLayout(new BoxLayout(runAllPanel, BoxLayout.X_AXIS));
-
-                        //---- runAllLablel ----
-                        runAllLablel.setText("Run all:");
-                        runAllPanel.add(runAllLablel);
-                        runAllPanel.add(hSpacer4);
-                    }
-                    panelContainer.add(runAllPanel);
                 }
                 panel4.add(panelContainer);
 
@@ -173,12 +171,12 @@ public class Gui extends JFrame {
                         borderSpinner.setPreferredSize(new Dimension(120, 30));
                         panel9.add(borderSpinner);
 
-                        //---- sBorderButton ----
-                        sBorderButton.setText("Run");
-                        sBorderButton.setMinimumSize(new Dimension(130, 30));
-                        sBorderButton.setMaximumSize(new Dimension(130, 30));
-                        sBorderButton.addActionListener(e -> sBorderButtonActionPerformed(e));
-                        panel9.add(sBorderButton);
+                        //---- takeScreenshotsButton ----
+                        takeScreenshotsButton.setText("Run");
+                        takeScreenshotsButton.setMinimumSize(new Dimension(130, 30));
+                        takeScreenshotsButton.setMaximumSize(new Dimension(130, 30));
+                        takeScreenshotsButton.addActionListener(e -> takeScreenshotsActionPerformed(e));
+                        panel9.add(takeScreenshotsButton);
                     }
                     panel8.add(panel9);
                     panel8.add(separator6);
@@ -188,41 +186,14 @@ public class Gui extends JFrame {
                     {
                         panel10.setLayout(new BoxLayout(panel10, BoxLayout.X_AXIS));
 
-                        //---- velocitySpinner ----
-                        velocitySpinner.setMaximumSize(new Dimension(120, 30));
-                        velocitySpinner.setMinimumSize(new Dimension(120, 30));
-                        velocitySpinner.setPreferredSize(new Dimension(120, 30));
-                        panel10.add(velocitySpinner);
-
-                        //---- sVelocityButton ----
-                        sVelocityButton.setText("Run");
-                        sVelocityButton.setMinimumSize(new Dimension(130, 30));
-                        sVelocityButton.setMaximumSize(new Dimension(130, 30));
-                        sVelocityButton.addActionListener(e -> sVelocityButtonActionPerformed(e));
-                        panel10.add(sVelocityButton);
+                        //---- processImagesButton ----
+                        processImagesButton.setText("Process...");
+                        processImagesButton.setMinimumSize(new Dimension(130, 30));
+                        processImagesButton.setMaximumSize(new Dimension(130, 30));
+                        processImagesButton.addActionListener(e -> processImagesActionPerformed(e));
+                        panel10.add(processImagesButton);
                     }
                     panel8.add(panel10);
-                    panel8.add(separator1);
-                    panel8.add(separator5);
-
-                    //======== panel11 ========
-                    {
-                        panel11.setLayout(new BoxLayout(panel11, BoxLayout.X_AXIS));
-
-                        //---- bothSpinner ----
-                        bothSpinner.setMaximumSize(new Dimension(120, 30));
-                        bothSpinner.setMinimumSize(new Dimension(120, 30));
-                        bothSpinner.setPreferredSize(new Dimension(120, 30));
-                        panel11.add(bothSpinner);
-
-                        //---- runAllButton ----
-                        runAllButton.setText("Run");
-                        runAllButton.setMinimumSize(new Dimension(130, 30));
-                        runAllButton.setMaximumSize(new Dimension(130, 30));
-                        runAllButton.addActionListener(e -> runAllButtonActionPerformed(e));
-                        panel11.add(runAllButton);
-                    }
-                    panel8.add(panel11);
                     panel8.add(separator4);
                 }
                 panel4.add(panel8);
@@ -234,10 +205,10 @@ public class Gui extends JFrame {
                 panel5.setLayout(new BoxLayout(panel5, BoxLayout.X_AXIS));
                 panel5.add(hSpacer5);
 
-                //---- deletImagesButton ----
-                deletImagesButton.setText("Delete all images");
-                deletImagesButton.addActionListener(e -> deletImagesButtonActionPerformed(e));
-                panel5.add(deletImagesButton);
+                //---- deleteImagesButton ----
+                deleteImagesButton.setText("Delete all images");
+                deleteImagesButton.addActionListener(e -> deleteImagesButtonActionPerformed(e));
+                panel5.add(deleteImagesButton);
                 panel5.add(hSpacer6);
             }
             panel3.add(panel5);
@@ -269,28 +240,20 @@ public class Gui extends JFrame {
     private JPanel scanVelocityPanel;
     private JLabel sVelocityLablel;
     private JPanel hSpacer3;
-    private JPanel runAllPanel;
-    private JLabel runAllLablel;
-    private JPanel hSpacer4;
     private JPanel panel8;
     private JSeparator separator3;
     private JPanel panel9;
     private JSpinner borderSpinner;
-    private JButton sBorderButton;
+    private JButton takeScreenshotsButton;
     private JSeparator separator6;
     private JSeparator separator2;
     private JPanel panel10;
-    private JSpinner velocitySpinner;
-    private JButton sVelocityButton;
-    private JSeparator separator1;
-    private JSeparator separator5;
-    private JPanel panel11;
-    private JSpinner bothSpinner;
-    private JButton runAllButton;
+    private JButton processImagesButton;
     private JSeparator separator4;
     private JPanel panel5;
     private JPanel hSpacer5;
-    private JButton deletImagesButton;
+    private JButton deleteImagesButton;
     private JPanel hSpacer6;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
+
 }

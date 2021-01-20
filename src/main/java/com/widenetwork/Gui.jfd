@@ -37,7 +37,7 @@ new FormModel {
 							name: "scanBorderPanel"
 							add( new FormComponent( "javax.swing.JLabel" ) {
 								name: "sBorderLablel"
-								"text": "Scan border:"
+								"text": "Take Screenshots"
 							} )
 							add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
 								name: "hSpacer2"
@@ -49,22 +49,10 @@ new FormModel {
 							name: "scanVelocityPanel"
 							add( new FormComponent( "javax.swing.JLabel" ) {
 								name: "sVelocityLablel"
-								"text": "Scan velocity:"
+								"text": "Process Images"
 							} )
 							add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
 								name: "hSpacer3"
-							} )
-						} )
-						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) {
-							"axis": 0
-						} ) {
-							name: "runAllPanel"
-							add( new FormComponent( "javax.swing.JLabel" ) {
-								name: "runAllLablel"
-								"text": "Run all:"
-							} )
-							add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
-								name: "hSpacer4"
 							} )
 						} )
 					} )
@@ -86,11 +74,11 @@ new FormModel {
 								"preferredSize": new java.awt.Dimension( 120, 30 )
 							} )
 							add( new FormComponent( "javax.swing.JButton" ) {
-								name: "sBorderButton"
+								name: "takeScreenshotsButton"
 								"text": "Run"
 								"minimumSize": new java.awt.Dimension( 130, 30 )
 								"maximumSize": new java.awt.Dimension( 130, 30 )
-								addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "sBorderButtonActionPerformed", true ) )
+								addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "takeScreenshotsActionPerformed", true ) )
 							} )
 						} )
 						add( new FormComponent( "javax.swing.JSeparator" ) {
@@ -103,42 +91,12 @@ new FormModel {
 							"axis": 0
 						} ) {
 							name: "panel10"
-							add( new FormComponent( "javax.swing.JSpinner" ) {
-								name: "velocitySpinner"
-								"maximumSize": new java.awt.Dimension( 120, 30 )
-								"minimumSize": new java.awt.Dimension( 120, 30 )
-								"preferredSize": new java.awt.Dimension( 120, 30 )
-							} )
 							add( new FormComponent( "javax.swing.JButton" ) {
-								name: "sVelocityButton"
-								"text": "Run"
+								name: "processImagesButton"
+								"text": "Process..."
 								"minimumSize": new java.awt.Dimension( 130, 30 )
 								"maximumSize": new java.awt.Dimension( 130, 30 )
-								addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "sVelocityButtonActionPerformed", true ) )
-							} )
-						} )
-						add( new FormComponent( "javax.swing.JSeparator" ) {
-							name: "separator1"
-						} )
-						add( new FormComponent( "javax.swing.JSeparator" ) {
-							name: "separator5"
-						} )
-						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) {
-							"axis": 0
-						} ) {
-							name: "panel11"
-							add( new FormComponent( "javax.swing.JSpinner" ) {
-								name: "bothSpinner"
-								"maximumSize": new java.awt.Dimension( 120, 30 )
-								"minimumSize": new java.awt.Dimension( 120, 30 )
-								"preferredSize": new java.awt.Dimension( 120, 30 )
-							} )
-							add( new FormComponent( "javax.swing.JButton" ) {
-								name: "runAllButton"
-								"text": "Run"
-								"minimumSize": new java.awt.Dimension( 130, 30 )
-								"maximumSize": new java.awt.Dimension( 130, 30 )
-								addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "runAllButtonActionPerformed", true ) )
+								addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "processImagesActionPerformed", true ) )
 							} )
 						} )
 						add( new FormComponent( "javax.swing.JSeparator" ) {
@@ -154,9 +112,9 @@ new FormModel {
 						name: "hSpacer5"
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "deletImagesButton"
+						name: "deleteImagesButton"
 						"text": "Delete all images"
-						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "deletImagesButtonActionPerformed", true ) )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "deleteImagesButtonActionPerformed", true ) )
 					} )
 					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
 						name: "hSpacer6"
@@ -164,7 +122,7 @@ new FormModel {
 				} )
 			} )
 		}, new FormLayoutConstraints( null ) {
-			"location": new java.awt.Point( 0, 0 )
+			"location": new java.awt.Point( 0, 30 )
 			"size": new java.awt.Dimension( 365, 275 )
 		} )
 	}

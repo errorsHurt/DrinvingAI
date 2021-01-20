@@ -14,18 +14,6 @@ public class ScreenshotHandler {
 
     private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_S");
 
-    public static BufferedImage invertImage(BufferedImage image) {
-
-        int width = image.getWidth();
-        int height = image.getHeight();
-        for (int x = 0; x < width; ++x) {
-            for (int y = 0; y < height; ++y) {
-                image.setRGB(x, y, -(image.getRGB(x, y)));
-            }
-        }
-        return image;
-    }
-
     public void takeStockScreenshot(int numbersOI) {
 
         BufferedImage bfStockImage = null;
@@ -152,6 +140,75 @@ public class ScreenshotHandler {
         }
 
         System.out.println("Finished cutting out the velocityImages!");
+
+    }
+
+    private static BufferedImage invertImage(BufferedImage image) {
+
+        int width = image.getWidth();
+        int height = image.getHeight();
+        for (int x = 0; x < width; ++x) {
+            for (int y = 0; y < height; ++y) {
+                image.setRGB(x, y, -(image.getRGB(x, y)));
+            }
+        }
+        return image;
+    }
+
+    public Boolean deleteImagesB() {
+        boolean deleted = false;
+        int deletedCounter = 0;
+        String source = "C:\\Users\\Meiers PC\\Desktop\\ImageRecognition\\borderScreens\\";
+        File dir = new File(source);
+        long imagesInDir = dir.length();
+        System.out.println(imagesInDir);
+        for (File file : dir.listFiles()) {
+            if (!file.isDirectory()) {
+                deleted = file.delete();
+                if (deleted) {
+                    deletedCounter++;
+                }
+            }
+        }
+        return deletedCounter == imagesInDir;
+
+    }
+
+    public Boolean deleteImagesV() {
+        boolean deleted = false;
+        int deletedCounter = 0;
+        String source = "C:\\Users\\Meiers PC\\Desktop\\ImageRecognition\\velocityScreens\\";
+        File dir = new File(source);
+        long imagesInDir = dir.length();
+        System.out.println(imagesInDir);
+        for (File file : dir.listFiles()) {
+            if (!file.isDirectory()) {
+                deleted = file.delete();
+                if (deleted) {
+                    deletedCounter++;
+                }
+            }
+        }
+        return deletedCounter == imagesInDir;
+
+    }
+
+    public Boolean deleteImagesS() {
+        boolean deleted = false;
+        int deletedCounter = 0;
+        String source = "C:\\Users\\Meiers PC\\Desktop\\ImageRecognition\\stockImages\\";
+        File dir = new File(source);
+        long imagesInDir = dir.length();
+        System.out.println(imagesInDir);
+        for (File file : dir.listFiles()) {
+            if (!file.isDirectory()) {
+                deleted = file.delete();
+                if (deleted) {
+                    deletedCounter++;
+                }
+            }
+        }
+        return deletedCounter == imagesInDir;
 
     }
 

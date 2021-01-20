@@ -386,7 +386,7 @@ public class ImageProcessing {
         return (pixel & 0x00ff0000) >> 16;
     }
 
-    public Boolean deleteImagesB() {
+    private Boolean deleteImagesB() {
         boolean deleted = false;
         int deletedCounter = 0;
         String source = "C:\\Users\\Meiers PC\\Desktop\\ImageRecognition\\borderScreens\\";
@@ -405,7 +405,7 @@ public class ImageProcessing {
 
     }
 
-    public Boolean deleteImagesV() {
+    private Boolean deleteImagesV() {
         boolean deleted = false;
         int deletedCounter = 0;
         String source = "C:\\Users\\Meiers PC\\Desktop\\ImageRecognition\\veloScreens\\";
