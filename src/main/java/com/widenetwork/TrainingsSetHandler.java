@@ -13,28 +13,24 @@ public class TrainingsSetHandler {
     public static ImageProcessing ir = new ImageProcessing();
     public NeuralNetwork neuralNetwork = new Perceptron(8, 2);
 
-        public DataSet trainingSet = new DataSet(8, 2);
-
-
+    public DataSet trainingSet = new DataSet(8, 2);
+    double velocity;
     private DateTimeFormatter dtf = null;
     private LocalDateTime now = null;
-    double velocity;
 
-    public void createNN(){
-     neuralNetwork.addLayer(new Layer(5));
+    public void createNN() {
+        neuralNetwork.addLayer(new Layer(5));
     }
 
     public void putInTrainingsSet(int l, int tll, int tl, int u, int tr, int trr, int r, int velocity) {
-
-       
         try {
 
-            trainingSet.add(new double[]{l, tll, tl, u, tr, trr, r, velocity }, new double[]{0, 0});
-             System.out.println("Datenreihe hinzugefügt.");
+            trainingSet.add(new double[]{l, tll, tl, u, tr, trr, r, velocity}, new double[]{0, 0});
+            System.out.println("Datenreihe hinzugefügt.");
         } catch (Exception e) {
             e.printStackTrace();
 
-            System.out.println("Datenreihe NICHT hinzugefügt.");
+            System.err.println("Datenreihe NICHT hinzugefügt.");
         }
 
     }
@@ -53,7 +49,7 @@ public class TrainingsSetHandler {
         System.out.println("Lernprozess beendet.");
     }
 
-    public void saveTrainingSetData(){
+    public void saveTrainingSetData() {
         dtf = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
         now = LocalDateTime.now();
         trainingSet.save("C:\\Users\\Meiers PC\\Desktop\\ImageRecognition\\TrackmaniaAI\\Training Sets\\TrainingData_" + dtf.format(now) + ".tset");

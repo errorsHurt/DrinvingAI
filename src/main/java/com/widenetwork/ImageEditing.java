@@ -1,173 +1,38 @@
 package com.widenetwork;
 
-import net.sourceforge.tess4j.Tesseract;
-import net.sourceforge.tess4j.TesseractException;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.concurrent.TimeUnit;
 
-public class ImageProcessing {
+public class ImageEditing {
 
-    private static final Tesseract tess = new Tesseract();
-    public static String text = "";
-    public static int velocity = 0;
-    static int bildcounter = 1;
-    public TrainingsSetHandler trainingsSetHandler = new TrainingsSetHandler();
-    int blackValue = 45;
-    private DateTimeFormatter dtf = null;
-    private LocalDateTime now = null;
+    public String imageDirPath = "C:\\Users\\Meiers PC\\Desktop\\ImageRecognition\\borderScreens\\";
 
-    public void takeScreensVelo(int iterations, int timeoutMS) {
-        System.out.println("Screenshotaufnahme läuft...");
-        for (int i = 0; i < iterations; i++) {
-            System.out.println(bildcounter);
-            takeScreenshotVelocity();
-            try {
-                TimeUnit.MILLISECONDS.sleep(timeoutMS);
-            } catch (Exception e) {
-                System.err.print(e);
-            }
-            bildcounter++;
-        }
-        System.out.println("Erledigt!");
-        bildcounter = 1;
-    }
+    private int blackValue = 35;
 
-    public void takeScreensBrd(int iterations, int timeoutMS) {
-        System.out.println("Screenshotaufnahme läuft...");
-        for (int i = 0; i < iterations; i++) {
-            System.out.println(bildcounter);
-            takeScreenshotBorder();
-            try {
-                TimeUnit.MILLISECONDS.sleep(timeoutMS);
-            } catch (Exception e) {
-                System.err.print(e);
-            }
-            bildcounter++;
-        }
-        System.out.println("Erledigt!");
-        bildcounter = 1;
-    }
+    public void markSpots() {
 
-    public void takeScreensBoth(int iterations, int timeoutMS) {
-        tess.setTessVariable("user_defined_dpi", "300");
-        System.out.println("Screenshotaufnahme läuft...");
-        for (int i = 0; i < iterations; i++) {
-            System.out.println(bildcounter);
-
-
-            takeScreenshotVelocity();
-            ocrImageVeloDirectory();
-            deleteImagesV();
-            takeScreenshotBorder();
-            editImageBorderDirectory();
-            deleteImagesB();
-
-            try {
-                TimeUnit.MILLISECONDS.sleep(timeoutMS);
-            } catch (Exception e) {
-                System.err.print(e);
-            }
-            bildcounter++;
-        }
-        bildcounter = 1;
-
-
-        trainingsSetHandler.saveTrainingSetData();
-        trainingsSetHandler.createNN();
-        trainingsSetHandler.saveNeuralNetwork();
-    }
-
-    private BufferedImage takeScreenshotVelocity() {
-        BufferedImage imageVelocity = null;
-        try {
-            dtf = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_S");
-            now = LocalDateTime.now();
-            imageVelocity = new Robot().createScreenCapture(new Rectangle(850, 890, 220, 90));
-            ImageIO.write(imageVelocity, "png", new File("C:\\Users\\Meiers PC\\Desktop\\ImageRecognition\\veloScreens\\screenshot_" + dtf.format(now) + ".png"));
-        } catch (Exception e) {
-            System.err.print(e);
-        }
-        return imageVelocity;
-    }
-
-    private BufferedImage takeScreenshotBorder() {
-        BufferedImage imageBorder = null;
-        try {
-            dtf = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_S");
-            now = LocalDateTime.now();
-            imageBorder = new Robot().createScreenCapture(new Rectangle(0, 500, 1920, 180));
-            ImageIO.write(imageBorder, "png", new File("C:\\Users\\Meiers PC\\Desktop\\ImageRecognition\\borderScreens\\screenshot_" + dtf.format(now) + ".png"));
-        } catch (Exception e) {
-            System.err.print(e);
-        }
-        return imageBorder;
-    }
-
-    public void ocrImageVeloDirectory() {
-        Path p = Paths.get("C:\\Users\\Meiers PC\\Desktop\\ImageRecognition\\stockImages\\");
-        FileVisitor<Path> fv = new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-                String t = file.toString();
-                tess.setDatapath("C:\\Program Files\\Tesseract-OCR\\tessdata");
-                tess.setLanguage("eng");
-                text = "-1";
-                try {
-                    text = tess.doOCR(new File(t));
-                    try {
-                        velocity = Integer.parseInt(text);
-
-                    } catch (Exception e) {
-                        velocity = 100;
-                        System.out.println("Durch Standartwert ersetzt.");
-                    }
-
-
-                } catch (TesseractException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("Detected Text/Number: " + text);
-                return FileVisitResult.CONTINUE;
-            }
-        };
-        try {
-            Files.walkFileTree(p, fv);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void editImageBorderDirectory() {
-        System.out.println("Bildbearbeitung läuft...");
-        String source = "C:\\Users\\Meiers PC\\Desktop\\ImageRecognition\\borderScreens\\";
         BufferedImage image = null;
-        File dir = new File(source);
+
+        File dir = new File(imageDirPath);
         File[] directoryListing = dir.listFiles();
+
         if (directoryListing != null) {
             for (File child : directoryListing) {
-                System.out.println(bildcounter);
+
                 String absolutePath = child.getAbsolutePath();
                 try {
                     image = ImageIO.read(child);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                //grayscaleImage(image, absolutePath);
-                searchForBlackSpots(image, absolutePath);
-                bildcounter++;
+                grayscaleImage(image, absolutePath);
+                lookAndMarkSpots(image, absolutePath);
+
             }
         }
-        System.out.println("Erledigt!");
-        bildcounter = 1;
     }
 
     private void grayscaleImage(BufferedImage img, String outputPath) {
@@ -193,7 +58,7 @@ public class ImageProcessing {
         }
     }
 
-    public void searchForBlackSpots(BufferedImage image, String outputPath) {
+    private void lookAndMarkSpots(BufferedImage image, String outputPath) {
 
         int y = 160;
         int x = 960;
@@ -206,12 +71,15 @@ public class ImageProcessing {
         int[] topRight = drawTopRight(image, x, y);
         int[] topRightRight = drawTopRightRight(image, x, y);
 
-
-        trainingsSetHandler.putInTrainingsSet(left[0], topLeftLeft[0], topLeft[0], up[0], topRight[0], topRightRight[0], right[0], velocity); //von links nach rechts
+        //trainingsSetHandler.putInTrainingsSet(left[0], topLeftLeft[0], topLeft[0], up[0], topRight[0], topRightRight[0], right[0], velocity); //von links nach rechts
 
         markResults(image, left, right, up, topLeft, topLeftLeft, topRight, topRightRight);
 
         safeImage(image, outputPath);
+    }
+
+    private int extractR(int pixel) {
+        return (pixel & 0x00ff0000) >> 16;
     }
 
     private int[] drawLeft(BufferedImage image, int x, int y) {
@@ -341,15 +209,6 @@ public class ImageProcessing {
         return new int[]{209, x, y};
     }
 
-    private void safeImage(BufferedImage img, String outputPath) {
-        File outputFile = new File(outputPath);
-        try {
-            ImageIO.write(img, "png", outputFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     private void markResults(BufferedImage img, int[] l, int[] r, int[] u, int[] tl, int[] tll, int[] tr, int[] trr) {
 
         Graphics2D g = (Graphics2D) img.getGraphics();
@@ -382,46 +241,13 @@ public class ImageProcessing {
 
     }
 
-    public int extractR(int pixel) {
-        return (pixel & 0x00ff0000) >> 16;
-    }
-
-    public Boolean deleteImagesB() {
-        boolean deleted = false;
-        int deletedCounter = 0;
-        String source = "C:\\Users\\Meiers PC\\Desktop\\ImageRecognition\\borderScreens\\";
-        File dir = new File(source);
-        long imagesInDir = dir.length();
-        System.out.println(imagesInDir);
-        for (File file : dir.listFiles()) {
-            if (!file.isDirectory()) {
-                deleted = file.delete();
-                if (deleted) {
-                    deletedCounter++;
-                }
-            }
+    private void safeImage(BufferedImage img, String outputPath) {
+        File outputFile = new File(outputPath);
+        try {
+            ImageIO.write(img, "png", outputFile);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return deletedCounter == imagesInDir;
-
-    }
-
-    public Boolean deleteImagesV() {
-        boolean deleted = false;
-        int deletedCounter = 0;
-        String source = "C:\\Users\\Meiers PC\\Desktop\\ImageRecognition\\veloScreens\\";
-        File dir = new File(source);
-        long imagesInDir = dir.length();
-        System.out.println(imagesInDir);
-        for (File file : dir.listFiles()) {
-            if (!file.isDirectory()) {
-                deleted = file.delete();
-                if (deleted) {
-                    deletedCounter++;
-                }
-            }
-        }
-        return deletedCounter == imagesInDir;
-
     }
 
 }
