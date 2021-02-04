@@ -15,8 +15,6 @@ public class Main {
         tSH.saveNeuralNetwork();
 
          */
-
-
         gui1 = new Gui();
         gui1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);        //könnte das hier nicht alles in den gui constructor?
         gui1.pack(); // <=========== PACK
