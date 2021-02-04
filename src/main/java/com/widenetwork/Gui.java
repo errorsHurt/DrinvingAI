@@ -17,6 +17,7 @@ public class Gui extends JFrame {
     public static ScreenshotHandler sH = new ScreenshotHandler();
     public static ImageEditing iE = new ImageEditing();
     public static TrainingsSetHandler tsH = new TrainingsSetHandler();
+    public int i = 0;
     public TextRecognitionHandler trH = new TextRecognitionHandler();
 
     public Gui() {
@@ -25,6 +26,9 @@ public class Gui extends JFrame {
 
 
     private void takeScreenshotsActionPerformed(ActionEvent e) {
+        i = (int) borderSpinner.getValue();
+        System.out.println("Spinner: " + i);
+
         waitFor(2);
 
         takeScreenshotsButton.setBackground(Color.red);
@@ -45,6 +49,7 @@ public class Gui extends JFrame {
         trH.velocityRecognition();
         iE.markSpots();
         tsH.saveTrainingSetData();
+
 
         System.out.println("Finished proccsessing images");
     }

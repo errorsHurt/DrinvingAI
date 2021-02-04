@@ -1,4 +1,4 @@
-package com.widenetwork;
+/*package com.widenetwork;
 
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
@@ -426,3 +426,4 @@ public class ImageProcessing {
     }
 
 }
+*/

@@ -158,10 +158,10 @@ public class ScreenshotHandler {
     public Boolean deleteImagesB() {
         boolean deleted = false;
         int deletedCounter = 0;
-        String source = "C:\\Users\\" + Main.user + "\\Desktop\\ImageRecognition\\borderScreens\\";
+        String source = "C:\\Users\\" + Main.user + "\\Desktop\\ImageRecognition\\borderScreens";
         File dir = new File(source);
-        long imagesInDir = dir.length();
-        System.out.println(imagesInDir);
+        int imagesInDir = (int) dir.length();
+        //System.out.println(imagesInDir);
         if (imagesInDir != 0) {
             for (File file : dir.listFiles()) {
                 if (!file.isDirectory()) {
@@ -175,17 +175,17 @@ public class ScreenshotHandler {
             System.out.println("Directory includes no files");
         }
 
-        return deletedCounter == imagesInDir;
+        return deletedCounter != imagesInDir;
 
     }
 
     public Boolean deleteImagesV() {
         boolean deleted = false;
         int deletedCounter = 0;
-        String source = "C:\\Users\\" + Main.user + "\\Desktop\\ImageRecognition\\velocityScreens\\";
+        String source = "C:\\Users\\" + Main.user + "\\Desktop\\ImageRecognition\\velocityScreens";
         File dir = new File(source);
-        long imagesInDir = dir.length();
-        System.out.println(imagesInDir);
+        int imagesInDir = (int) dir.length();
+        //System.out.println(imagesInDir);
         if (imagesInDir != 0) {
             for (File file : dir.listFiles()) {
                 if (!file.isDirectory()) {
@@ -198,17 +198,17 @@ public class ScreenshotHandler {
         } else {
             System.out.println("Directory includes no files");
         }
-        return deletedCounter == imagesInDir;
+        return deletedCounter != imagesInDir;
 
     }
 
     public Boolean deleteImagesS() {
         boolean deleted = false;
         int deletedCounter = 0;
-        String source = "C:\\Users\\" + Main.user + "\\Desktop\\ImageRecognition\\stockImages\\";
+        String source = "C:\\Users\\" + Main.user + "\\Desktop\\ImageRecognition\\stockImages";
         File dir = new File(source);
-        long imagesInDir = dir.length();
-        System.out.println(imagesInDir);
+        int imagesInDir = (int) dir.length();
+        //System.out.println(imagesInDir);
         if (imagesInDir != 0) {
             for (File file : dir.listFiles()) {
                 if (!file.isDirectory()) {
@@ -221,7 +221,7 @@ public class ScreenshotHandler {
         } else {
             System.out.println("Directory includes no files");
         }
-        return deletedCounter == imagesInDir;
+        return deletedCounter != imagesInDir;
 
     }
 

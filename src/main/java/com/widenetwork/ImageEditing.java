@@ -10,8 +10,8 @@ public class ImageEditing {
 
     public String borderImageDirPath = "C:\\Users\\" + Main.user + "\\Desktop\\ImageRecognition\\borderScreens\\";
     public TrainingsSetHandler trainingsSetHandler = new TrainingsSetHandler();
-    private int blackValue = 35;
     public TextRecognitionHandler textRecognitionHandler = new TextRecognitionHandler();
+    private final int blackValue = 35;
 
     public void markSpots() {
         int lv = 0;
@@ -23,7 +23,6 @@ public class ImageEditing {
 
         if (directoryListing != null) {
             for (File child : directoryListing) {
-
                 String absolutePath = child.getAbsolutePath();
                 try {
                     image = ImageIO.read(child);
@@ -33,10 +32,10 @@ public class ImageEditing {
                 grayscaleImage(image, absolutePath);
                 int[] valuesCache = lookAndMarkSpots(image, absolutePath);
 
-                trainingsSetHandler.putInTrainingsSet(valuesCache[0], valuesCache[1], valuesCache[2], valuesCache[3], valuesCache[4], valuesCache[5], valuesCache[6], textRecognitionHandler.velocityRunHolder[lv]); //von links nach rechts
+                trainingsSetHandler.putInTrainingsSet(valuesCache[0], valuesCache[1], valuesCache[2], valuesCache[3], valuesCache[4], valuesCache[5], valuesCache[6], textRecognitionHandler.velocityCache[lv]); //von links nach rechts
                 lv++;
             }
-            lv = 0;
+
         }
 
     }
