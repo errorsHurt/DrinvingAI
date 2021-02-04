@@ -10,7 +10,6 @@ import java.time.format.DateTimeFormatter;
 
 public class TrainingsSetHandler {
 
-    public static ImageProcessing ir = new ImageProcessing();
     public NeuralNetwork neuralNetwork = new Perceptron(8, 2);
 
     public DataSet trainingSet = new DataSet(8, 2);
@@ -24,12 +23,10 @@ public class TrainingsSetHandler {
 
     public void putInTrainingsSet(int l, int tll, int tl, int u, int tr, int trr, int r, int velocity) {
         try {
-
             trainingSet.add(new double[]{l, tll, tl, u, tr, trr, r, velocity}, new double[]{0, 0});
             System.out.println("Datenreihe hinzugefügt.");
         } catch (Exception e) {
             e.printStackTrace();
-
             System.err.println("Datenreihe NICHT hinzugefügt.");
         }
 

@@ -16,6 +16,8 @@ public class Gui extends JFrame {
 
     public static ScreenshotHandler sH = new ScreenshotHandler();
     public static ImageEditing iE = new ImageEditing();
+    public static TrainingsSetHandler tsH = new TrainingsSetHandler();
+    public TextRecognitionHandler trH = new TextRecognitionHandler();
 
     public Gui() {
         initComponents();
@@ -25,21 +27,34 @@ public class Gui extends JFrame {
     private void takeScreenshotsActionPerformed(ActionEvent e) {
         waitFor(2);
 
+        takeScreenshotsButton.setBackground(Color.red);
+
         sH.takeStockScreenshot((int) borderSpinner.getValue());
         sH.cutoutBorderImage();
         sH.cutoutVelocityImage();
 
-        System.out.println("Finished");
+        takeScreenshotsButton.setBackground(Color.green);
+
+        System.out.println("Finished taking screenshots");
     }
 
     private void processImagesActionPerformed(ActionEvent e) {
         waitFor(2);
 
+
+        trH.velocityRecognition();
+        //iE.ocrImageVeloDirectory();
+        //iE.putVelocityInArray();
         iE.markSpots();
+
+        //tsH.putInTrainingsSet();
+
 
         //ir.takeScreensVelo((int) velocitySpinner.getValue(),20);
         //ir.ocrImageVeloDirectory();
-        System.out.println("Finished");
+
+        //tsH.saveTrainingSetData();
+        System.out.println("Finished proccsessing images");
     }
 
     private void deleteImagesButtonActionPerformed(ActionEvent e) {
@@ -100,16 +115,17 @@ public class Gui extends JFrame {
 
         //======== panel3 ========
         {
-            panel3.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder
-                    (0, 0, 0, 0), "JF\u006frmD\u0065sig\u006eer \u0045val\u0075ati\u006fn", javax.swing.border.TitledBorder.CENTER, javax.swing.border
-                    .TitledBorder.BOTTOM, new java.awt.Font("Dia\u006cog", java.awt.Font.BOLD, 12), java.awt
-                    .Color.red), panel3.getBorder()));
+            panel3.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.TitledBorder(new javax.
+                    swing.border.EmptyBorder(0, 0, 0, 0), "JFor\u006dDesi\u0067ner \u0045valu\u0061tion", javax.swing.border
+                    .TitledBorder.CENTER, javax.swing.border.TitledBorder.BOTTOM, new java.awt.Font("Dia\u006cog"
+                    , java.awt.Font.BOLD, 12), java.awt.Color.red), panel3.getBorder
+                    ()));
             panel3.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
                 @Override
-                public void
-                propertyChange(java.beans.PropertyChangeEvent e) {
-                    if ("\u0062ord\u0065r".equals(e.getPropertyName())) throw new RuntimeException()
-                            ;
+                public void propertyChange(java
+                                                   .beans.PropertyChangeEvent e) {
+                    if ("bord\u0065r".equals(e.getPropertyName())) throw new RuntimeException
+                            ();
                 }
             });
             panel3.setLayout(new BoxLayout(panel3, BoxLayout.Y_AXIS));

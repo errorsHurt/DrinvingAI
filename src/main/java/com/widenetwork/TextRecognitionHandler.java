@@ -8,13 +8,13 @@ import java.io.File;
 
 public class TextRecognitionHandler {
 
-    private final String tessDataPath = "C:\\Program Files\\Tesseract-OCR\\tessdata";
-    private final String tessLanguage = "digits";
+    private final String tessDataPath = "C:\\Program Files\\Tesseract-OCR";
+    private final String tessLanguage = "eng";
     private final String tessDpi = "300";
     private final String tessSetting = "tessuser_defined_dpi";
 
     private final TrainingsSetHandler tSH = new TrainingsSetHandler();
-    private final String velocityDirPath = "C:\\Users\\Meiers PC\\Desktop\\ImageRecognition\\velocityScreens\\";
+    private final String velocityDirPath = "C:\\Users\\Meiers PC\\Desktop\\ImageRecognition\\velocityScreens";
     public Tesseract tess = new Tesseract();
 
     public int[] velocityRunHolder;
@@ -35,7 +35,6 @@ public class TextRecognitionHandler {
                 tess.setLanguage(tessLanguage);
 
                 String recognizedText = "-1";
-
 
                 try {
                     tess.setTessVariable(tessSetting, tessDpi);

@@ -206,12 +206,13 @@ public class ImageProcessing {
         int[] topRight = drawTopRight(image, x, y);
         int[] topRightRight = drawTopRightRight(image, x, y);
 
-
         trainingsSetHandler.putInTrainingsSet(left[0], topLeftLeft[0], topLeft[0], up[0], topRight[0], topRightRight[0], right[0], velocity); //von links nach rechts
 
         markResults(image, left, right, up, topLeft, topLeftLeft, topRight, topRightRight);
 
         safeImage(image, outputPath);
+
+
     }
 
     private int[] drawLeft(BufferedImage image, int x, int y) {

@@ -8,15 +8,16 @@ import java.io.IOException;
 
 public class ImageEditing {
 
-    public String imageDirPath = "C:\\Users\\Meiers PC\\Desktop\\ImageRecognition\\borderScreens\\";
-
+    public String borderImageDirPath = "C:\\Users\\Meiers PC\\Desktop\\ImageRecognition\\borderScreens\\";
+    public TrainingsSetHandler trainingsSetHandler = new TrainingsSetHandler();
+    private int velocity = 0;
     private int blackValue = 35;
 
     public void markSpots() {
 
         BufferedImage image = null;
 
-        File dir = new File(imageDirPath);
+        File dir = new File(borderImageDirPath);
         File[] directoryListing = dir.listFiles();
 
         if (directoryListing != null) {
@@ -71,7 +72,7 @@ public class ImageEditing {
         int[] topRight = drawTopRight(image, x, y);
         int[] topRightRight = drawTopRightRight(image, x, y);
 
-        //trainingsSetHandler.putInTrainingsSet(left[0], topLeftLeft[0], topLeft[0], up[0], topRight[0], topRightRight[0], right[0], velocity); //von links nach rechts
+        trainingsSetHandler.putInTrainingsSet(left[0], topLeftLeft[0], topLeft[0], up[0], topRight[0], topRightRight[0], right[0], velocity); //von links nach rechts
 
         markResults(image, left, right, up, topLeft, topLeftLeft, topRight, topRightRight);
 
