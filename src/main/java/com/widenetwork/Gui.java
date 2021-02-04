@@ -43,17 +43,9 @@ public class Gui extends JFrame {
 
 
         trH.velocityRecognition();
-        //iE.ocrImageVeloDirectory();
-        //iE.putVelocityInArray();
         iE.markSpots();
+        tsH.saveTrainingSetData();
 
-        //tsH.putInTrainingsSet();
-
-
-        //ir.takeScreensVelo((int) velocitySpinner.getValue(),20);
-        //ir.ocrImageVeloDirectory();
-
-        //tsH.saveTrainingSetData();
         System.out.println("Finished proccsessing images");
     }
 

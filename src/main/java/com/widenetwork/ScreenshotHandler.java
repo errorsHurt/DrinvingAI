@@ -10,9 +10,21 @@ import java.time.format.DateTimeFormatter;
 
 public class ScreenshotHandler {
 
-    private final String stockImageDirPath = "C:\\Users\\Meiers PC\\Desktop\\ImageRecognition\\stockImages\\";
+    private final String stockImageDirPath = "C:\\Users\\" + Main.user + "\\Desktop\\ImageRecognition\\stockImages\\";
 
     private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_S");
+
+    private static BufferedImage invertImage(BufferedImage image) {
+
+        int width = image.getWidth();
+        int height = image.getHeight();
+        for (int x = 0; x < width; ++x) {
+            for (int y = 0; y < height; ++y) {
+                image.setRGB(x, y, -(image.getRGB(x, y)));
+            }
+        }
+        return image;
+    }
 
     public void takeStockScreenshot(int numbersOI) {
 
@@ -56,7 +68,7 @@ public class ScreenshotHandler {
                 String date = fileName.substring(10, 28);
                 String newFileName = "borderScreen" + date + ".png";
 
-                String borderImageDirPath = "C:\\Users\\Meiers PC\\Desktop\\ImageRecognition\\borderScreens\\";
+                String borderImageDirPath = "C:\\Users\\" + Main.user + "\\Desktop\\ImageRecognition\\borderScreens\\";
                 try {
                     stockImage = ImageIO.read(child);   //Auslesen von Bilddatei
                     System.out.println("Cutout file...");
@@ -108,7 +120,7 @@ public class ScreenshotHandler {
                 String date = fileName.substring(10, 28);
                 String newFileName = "velocityScreen" + date + ".png";
 
-                String velocityImageDirPath = "C:\\Users\\Meiers PC\\Desktop\\ImageRecognition\\velocityScreens\\";
+                String velocityImageDirPath = "C:\\Users\\" + Main.user + "\\Desktop\\ImageRecognition\\velocityScreens\\";
                 try {
                     stockImage = ImageIO.read(child);   //Auslesen von Bilddatei
                     System.out.println("Cutout file...");
@@ -143,33 +155,26 @@ public class ScreenshotHandler {
 
     }
 
-    private static BufferedImage invertImage(BufferedImage image) {
-
-        int width = image.getWidth();
-        int height = image.getHeight();
-        for (int x = 0; x < width; ++x) {
-            for (int y = 0; y < height; ++y) {
-                image.setRGB(x, y, -(image.getRGB(x, y)));
-            }
-        }
-        return image;
-    }
-
     public Boolean deleteImagesB() {
         boolean deleted = false;
         int deletedCounter = 0;
-        String source = "C:\\Users\\Meiers PC\\Desktop\\ImageRecognition\\borderScreens\\";
+        String source = "C:\\Users\\" + Main.user + "\\Desktop\\ImageRecognition\\borderScreens\\";
         File dir = new File(source);
         long imagesInDir = dir.length();
         System.out.println(imagesInDir);
-        for (File file : dir.listFiles()) {
-            if (!file.isDirectory()) {
-                deleted = file.delete();
-                if (deleted) {
-                    deletedCounter++;
+        if (imagesInDir != 0) {
+            for (File file : dir.listFiles()) {
+                if (!file.isDirectory()) {
+                    deleted = file.delete();
+                    if (deleted) {
+                        deletedCounter++;
+                    }
                 }
             }
+        } else {
+            System.out.println("Directory includes no files");
         }
+
         return deletedCounter == imagesInDir;
 
     }
@@ -177,17 +182,21 @@ public class ScreenshotHandler {
     public Boolean deleteImagesV() {
         boolean deleted = false;
         int deletedCounter = 0;
-        String source = "C:\\Users\\Meiers PC\\Desktop\\ImageRecognition\\velocityScreens\\";
+        String source = "C:\\Users\\" + Main.user + "\\Desktop\\ImageRecognition\\velocityScreens\\";
         File dir = new File(source);
         long imagesInDir = dir.length();
         System.out.println(imagesInDir);
-        for (File file : dir.listFiles()) {
-            if (!file.isDirectory()) {
-                deleted = file.delete();
-                if (deleted) {
-                    deletedCounter++;
+        if (imagesInDir != 0) {
+            for (File file : dir.listFiles()) {
+                if (!file.isDirectory()) {
+                    deleted = file.delete();
+                    if (deleted) {
+                        deletedCounter++;
+                    }
                 }
             }
+        } else {
+            System.out.println("Directory includes no files");
         }
         return deletedCounter == imagesInDir;
 
@@ -196,17 +205,21 @@ public class ScreenshotHandler {
     public Boolean deleteImagesS() {
         boolean deleted = false;
         int deletedCounter = 0;
-        String source = "C:\\Users\\Meiers PC\\Desktop\\ImageRecognition\\stockImages\\";
+        String source = "C:\\Users\\" + Main.user + "\\Desktop\\ImageRecognition\\stockImages\\";
         File dir = new File(source);
         long imagesInDir = dir.length();
         System.out.println(imagesInDir);
-        for (File file : dir.listFiles()) {
-            if (!file.isDirectory()) {
-                deleted = file.delete();
-                if (deleted) {
-                    deletedCounter++;
+        if (imagesInDir != 0) {
+            for (File file : dir.listFiles()) {
+                if (!file.isDirectory()) {
+                    deleted = file.delete();
+                    if (deleted) {
+                        deletedCounter++;
+                    }
                 }
             }
+        } else {
+            System.out.println("Directory includes no files");
         }
         return deletedCounter == imagesInDir;
 

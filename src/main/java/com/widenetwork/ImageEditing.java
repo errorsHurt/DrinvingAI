@@ -8,12 +8,13 @@ import java.io.IOException;
 
 public class ImageEditing {
 
-    public String borderImageDirPath = "C:\\Users\\Meiers PC\\Desktop\\ImageRecognition\\borderScreens\\";
+    public String borderImageDirPath = "C:\\Users\\" + Main.user + "\\Desktop\\ImageRecognition\\borderScreens\\";
     public TrainingsSetHandler trainingsSetHandler = new TrainingsSetHandler();
-    private int velocity = 0;
     private int blackValue = 35;
+    public TextRecognitionHandler textRecognitionHandler = new TextRecognitionHandler();
 
     public void markSpots() {
+        int lv = 0;
 
         BufferedImage image = null;
 
@@ -30,10 +31,14 @@ public class ImageEditing {
                     e.printStackTrace();
                 }
                 grayscaleImage(image, absolutePath);
-                lookAndMarkSpots(image, absolutePath);
+                int[] valuesCache = lookAndMarkSpots(image, absolutePath);
 
+                trainingsSetHandler.putInTrainingsSet(valuesCache[0], valuesCache[1], valuesCache[2], valuesCache[3], valuesCache[4], valuesCache[5], valuesCache[6], textRecognitionHandler.velocityRunHolder[lv]); //von links nach rechts
+                lv++;
             }
+            lv = 0;
         }
+
     }
 
     private void grayscaleImage(BufferedImage img, String outputPath) {
@@ -59,7 +64,7 @@ public class ImageEditing {
         }
     }
 
-    private void lookAndMarkSpots(BufferedImage image, String outputPath) {
+    private int[] lookAndMarkSpots(BufferedImage image, String outputPath) {
 
         int y = 160;
         int x = 960;
@@ -72,11 +77,12 @@ public class ImageEditing {
         int[] topRight = drawTopRight(image, x, y);
         int[] topRightRight = drawTopRightRight(image, x, y);
 
-        trainingsSetHandler.putInTrainingsSet(left[0], topLeftLeft[0], topLeft[0], up[0], topRight[0], topRightRight[0], right[0], velocity); //von links nach rechts
 
-        markResults(image, left, right, up, topLeft, topLeftLeft, topRight, topRightRight);
+        markResults(image, left, right, up, topLeft, topLeftLeft, topRight, topRightRight); // Kann auskommentiert werden, sobald wir keine Bilder mehr anstarren
 
-        safeImage(image, outputPath);
+        safeImage(image, outputPath); // siehe oberen Kommentar
+
+        return new int[]{left[0], topLeftLeft[0], topLeft[0], up[0], topRight[0], topRightRight[0], right[0]};
     }
 
     private int extractR(int pixel) {

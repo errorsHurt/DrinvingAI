@@ -1,7 +1,6 @@
 package com.widenetwork;
 
 import javax.swing.*;
-import java.awt.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -14,14 +13,15 @@ public class Main {
     private static String imgText;
     public final TrainingsSetHandler tSH = new TrainingsSetHandler();
 
-    public static void main(String[] args) throws InterruptedException, AWTException {
+    public static String user = "Meiers PC";
+
+    public static void main(String[] args) {
 
         Gui gui1 = new Gui();
-        gui1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        gui1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);        //könnte das hier nicht alles in den gui constructor?
         gui1.pack(); // <=========== PACK
         gui1.setVisible(true);
 
     }
-
 
 }

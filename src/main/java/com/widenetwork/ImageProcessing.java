@@ -82,7 +82,7 @@ public class ImageProcessing {
 
 
         trainingsSetHandler.saveTrainingSetData();
-        trainingsSetHandler.createNN();
+        //trainingsSetHandler.createNN();
         trainingsSetHandler.saveNeuralNetwork();
     }
 
