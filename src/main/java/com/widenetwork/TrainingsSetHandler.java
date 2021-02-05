@@ -1,37 +1,97 @@
 package com.widenetwork;
 
+
+import org.neuroph.core.NeuralNetwork;
 import org.neuroph.core.data.DataSet;
 import org.neuroph.core.data.DataSetRow;
+import org.neuroph.core.learning.error.MeanAbsoluteError;
+import org.neuroph.core.learning.error.MeanSquaredError;
 import org.neuroph.nnet.MultiLayerPerceptron;
+import org.neuroph.nnet.learning.MomentumBackpropagation;
 import org.neuroph.util.TransferFunctionType;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 
 public class TrainingsSetHandler {
 
-    public static MultiLayerPerceptron neuralNetwork = new MultiLayerPerceptron(TransferFunctionType.SIGMOID, 8, 10, 4);
+    public static MultiLayerPerceptron neuralNetwork;// = new MultiLayerPerceptron(TransferFunctionType.SIGMOID, 8, 6, 5, 4);
     public static DataSet trainingSet = new DataSet(8, 4);
     private DateTimeFormatter dtf = null;
     private LocalDateTime now = null;
 
     public void createNN() {
 
+        //neuralNetwork.randomizeWeights();
 
-        neuralNetwork.randomizeWeights();
+        neuralNetwork = new MultiLayerPerceptron(TransferFunctionType.SIGMOID, 8, 6, 5, 4);
+        MomentumBackpropagation learningRule = (MomentumBackpropagation) neuralNetwork.getLearningRule();
+        learningRule.setLearningRate(0.2);
+        learningRule.setMaxError(0.01);
+        saveNeuralNetwork(neuralNetwork);
 
     }
+
+    public void trainNN(int iterations) {
+
+        NeuralNetwork nn = NeuralNetwork.load("C:\\Users\\" + Main.user + "\\Desktop\\ImageRecognition\\TrackmaniaAI\\Neural Networks\\TrackmaniaKI_Perceptron.nnet");
+
+        MomentumBackpropagation learningRule = (MomentumBackpropagation) nn.getLearningRule();
+
+        DataSet ds = DataSet.load("C:\\Users\\Meiers PC\\Desktop\\ImageRecognition\\TrackmaniaAI\\Training Sets\\TrainingData_20210204_210008.tset");
+
+        learningRule.setMaxIterations(iterations);
+        System.out.println("Start");
+        nn.learn(ds);
+        System.out.println("Ende");
+        saveNeuralNetwork(nn);
+    }
+
+    public void testData() {
+
+        NeuralNetwork nn = NeuralNetwork.load("C:\\Users\\Meiers PC\\Desktop\\ImageRecognition\\TrackmaniaAI\\Neural Networks\\TrackmaniaKI_Perceptron.nnet");
+
+        DataSet ds = DataSet.load("C:\\Users\\Meiers PC\\Desktop\\ImageRecognition\\TrackmaniaAI\\Training Sets\\TrainingData_20210204_210008.tset");
+
+        MeanSquaredError mse = new MeanSquaredError();
+        MeanAbsoluteError mae = new MeanAbsoluteError();
+
+        for (DataSetRow testSetRow : ds.getRows()) {
+            nn.setInput(testSetRow.getInput());
+            nn.calculate();
+            double[] networkOutput = nn.getOutput();
+            double[] desiredOutput = testSetRow.getDesiredOutput();
+
+            System.out.print("Input: " + Arrays.toString(testSetRow.getInput()));
+            System.out.print(" | Output: " + Arrays.toString(networkOutput));
+            System.out.println(" | Desired output" + Arrays.toString(testSetRow.getDesiredOutput()));
+
+            mse.addPatternError(networkOutput, desiredOutput);
+            mae.addPatternError(networkOutput, desiredOutput);
+        }
+
+        System.out.println("Mean squared error is: " + mse.getTotalError());
+        System.out.println("Mean absolute error is: " + mae.getTotalError());
+
+    }
+
 
     public void trainNeuralNetwork() {
         System.out.println("Lernprozess gestartet.");
-        neuralNetwork.learn(trainingSet);
+        try {
+            neuralNetwork.learn(DataSet.load("C:\\Users\\Meiers PC\\Desktop\\ImageRecognition\\TrackmaniaAI\\Training Sets\\TrainingData_20210204_210008.tset"));
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        neuralNetwork.stopLearning();
         System.out.println("Lernprozess beendet.");
     }
 
-    public void saveNeuralNetwork() {
-        dtf = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
-        now = LocalDateTime.now();
-
+    public void saveNeuralNetwork(NeuralNetwork neuralNetwork) {
+        //dtf = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+        //now = LocalDateTime.now();
         neuralNetwork.save("C:\\Users\\" + Main.user + "\\Desktop\\ImageRecognition\\TrackmaniaAI\\Neural Networks\\TrackmaniaKI_Perceptron.nnet");
         System.out.println("Neurales Netzwerk gespeichert.");
     }
