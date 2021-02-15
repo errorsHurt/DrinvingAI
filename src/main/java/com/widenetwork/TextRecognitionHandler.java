@@ -20,9 +20,11 @@ public class TextRecognitionHandler {
     public static int[] velocityCache;
 
     public void velocityRecognition() {
-        Gui gRef = Main.gui1;
+        Gui gRef = Main.gui1;       //multi screenshot mode
 
-        velocityCache = new int[(int) gRef.i];
+        System.out.println("gRef.i:" + gRef.i);
+        velocityCache = new int[(int) gRef.i];        //multi screenshot mode
+        //velocityCache = new int[1];     //single screenshot mode
 
         int fileCounter = 0;
 
@@ -45,7 +47,9 @@ public class TextRecognitionHandler {
                     tess.setTessVariable(tessSetting, tessDpi);
                     recognizedText = tess.doOCR(new File(child.getAbsolutePath()));
                     String resultString = recognizedText.replaceAll("[^\\d]", "");
-                    velocityCache[fileCounter] = Integer.parseInt(resultString);
+                    System.out.println("FileCounter: " + fileCounter);
+                    velocityCache[fileCounter] = Integer.parseInt(resultString);            //Multiscreenshot mode
+                    //velocityCache[0] = Integer.parseInt(resultString);            //Singlescreenshot mode
 
                 } catch (TesseractException e) {
                     velocityCache[fileCounter] = 130;                                                                                   //WICHTIG!!! Ändern auf vorherigen Wert!!!
