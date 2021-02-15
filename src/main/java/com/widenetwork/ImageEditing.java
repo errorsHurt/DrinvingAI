@@ -1,6 +1,9 @@
 package com.widenetwork;
 
+import com.widenetwork.DesiredInputHandler.DInput;
+
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -12,6 +15,7 @@ public class ImageEditing {
     public TrainingsSetHandler trainingsSetHandler = new TrainingsSetHandler();
     public TextRecognitionHandler textRecognitionHandler = new TextRecognitionHandler();
     private final int blackValue = 35;
+    public boolean waitForNextBtn = false;
 
     public void markSpots() {
         int lv = 0;
@@ -22,6 +26,10 @@ public class ImageEditing {
         File[] directoryListing = dir.listFiles();
 
         if (directoryListing != null) {
+
+            while (directoryListing.length <= lv) {
+
+            }
             for (File child : directoryListing) {
                 String absolutePath = child.getAbsolutePath();
                 try {
@@ -30,14 +38,60 @@ public class ImageEditing {
                     e.printStackTrace();
                 }
                 grayscaleImage(image, absolutePath);
-                int[] valuesCache = lookAndMarkSpots(image, absolutePath);
 
-                trainingsSetHandler.putInTrainingsSet(valuesCache[0], valuesCache[1], valuesCache[2], valuesCache[3], valuesCache[4], valuesCache[5], valuesCache[6], textRecognitionHandler.velocityCache[lv]); //von links nach rechts
+                int[] valuesInputCache = lookAndMarkSpots(image, absolutePath);
+
+                DInput dI = new DInput();
+                dI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);        //könnte das hier nicht alles in den gui constructor?
+                dI.pack(); // <=========== PACK
+                dI.setVisible(true);
+
+                dI.imagePanel.add(new JLabel(new ImageIcon(image)));
+
+
+                while (waitForNextBtn == false) {
+                    System.out.println("While schleife");
+                }
+                System.out.println("drausen");
+                dI.dispose();
+
+                int[] valuesOutputCache = {Integer.parseInt(dI.value1Label.getText()), Integer.parseInt(dI.value2Label.getText()), Integer.parseInt(dI.value3Label.getText()), Integer.parseInt(dI.value4Label.getText())};
+
+
+                trainingsSetHandler.putInTrainingsSet(valuesInputCache[0], valuesInputCache[1], valuesInputCache[2], valuesInputCache[3], valuesInputCache[4], valuesInputCache[5], valuesInputCache[6], TextRecognitionHandler.velocityCache[lv], valuesOutputCache[0], valuesOutputCache[1], valuesOutputCache[2], valuesOutputCache[3]); //von links nach rechts
                 lv++;
             }
 
         }
 
+    }
+
+    public double[] getSpots() {
+        int lv = 0;
+
+        BufferedImage image = null;
+
+        File dir = new File(borderImageDirPath);
+        File[] directoryListing = dir.listFiles();
+        double[] valuesCache = new double[8];
+
+        if (directoryListing != null) {
+            for (File child : directoryListing) {
+                String absolutePath = child.getAbsolutePath();
+                try {
+                    image = ImageIO.read(child);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                grayscaleImage(image, absolutePath);
+                valuesCache = lookSpots(image, absolutePath);
+
+                lv++;
+            }
+
+        }
+        //return new double[]{valuesCache[0], valuesCache[1], valuesCache[2], valuesCache[3], valuesCache[4], valuesCache[5], valuesCache[6], TextRecognitionHandler.velocityCache[lv]};      //Multiscreenshot mode
+        return new double[]{valuesCache[0], valuesCache[1], valuesCache[2], valuesCache[3], valuesCache[4], valuesCache[5], valuesCache[6], TextRecognitionHandler.velocityCache[0]};      //Singlescrenenshot mode
     }
 
     private void grayscaleImage(BufferedImage img, String outputPath) {
@@ -82,6 +136,27 @@ public class ImageEditing {
         safeImage(image, outputPath); // siehe oberen Kommentar
 
         return new int[]{left[0], topLeftLeft[0], topLeft[0], up[0], topRight[0], topRightRight[0], right[0]};
+    }
+
+    private double[] lookSpots(BufferedImage image, String outputPath) {
+
+        int y = 160;
+        int x = 960;
+
+        int[] left = drawLeft(image, x, y);
+        int[] right = drawRight(image, x, y);
+        int[] up = drawUp(image, x, y);
+        int[] topLeft = drawTopLeft(image, x, y);
+        int[] topLeftLeft = drawTopLeftLeft(image, x, y);
+        int[] topRight = drawTopRight(image, x, y);
+        int[] topRightRight = drawTopRightRight(image, x, y);
+
+
+        //markResults(image, left, right, up, topLeft, topLeftLeft, topRight, topRightRight); // Kann auskommentiert werden, sobald wir keine Bilder mehr anstarren
+
+        safeImage(image, outputPath); // siehe oberen Kommentar
+
+        return new double[]{left[0], topLeftLeft[0], topLeft[0], up[0], topRight[0], topRightRight[0], right[0]};
     }
 
     private int extractR(int pixel) {

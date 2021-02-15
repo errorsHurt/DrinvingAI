@@ -4,9 +4,12 @@
 
 package com.widenetwork;
 
+import com.widenetwork.DesiredInputHandler.DInput;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -18,7 +21,8 @@ public class Gui extends JFrame {
     public static ImageEditing iE = new ImageEditing();
     public static TrainingsSetHandler tsH = new TrainingsSetHandler();
     public int i = 0;
-    public TextRecognitionHandler trH = new TextRecognitionHandler();
+    public static TextRecognitionHandler trH = new TextRecognitionHandler();
+    public static DInput dI = new DInput();
 
     public Gui() {
         initComponents();
@@ -29,17 +33,29 @@ public class Gui extends JFrame {
         i = (int) borderSpinner.getValue();
         System.out.println("Spinner: " + i);
 
+        takeScreenshotsButton.setBackground(Color.red);
+
         waitFor(2);
 
-        takeScreenshotsButton.setBackground(Color.red);
+        ScreenshotHandler.stockCache = new BufferedImage[(int) borderSpinner.getValue()];
+        ScreenshotHandler.borderCache = new BufferedImage[(int) borderSpinner.getValue()];
+        ScreenshotHandler.velocityCache = new BufferedImage[(int) borderSpinner.getValue()];
 
         sH.takeStockScreenshot((int) borderSpinner.getValue());
         sH.cutoutBorderImage();
         sH.cutoutVelocityImage();
 
+        System.out.println("Finished taking screenshots");
+
+        System.out.println("Saving screenshot...");
+
+        sH.saveCachedImages();
+
+        System.out.println("Captured screenshot successfully");
+
         takeScreenshotsButton.setBackground(Color.green);
 
-        System.out.println("Finished taking screenshots");
+
     }
 
     private void processImagesActionPerformed(ActionEvent e) {

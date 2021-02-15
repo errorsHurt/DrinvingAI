@@ -4,45 +4,45 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class ScreenshotHandler {
 
-    private final String stockImageDirPath = "C:\\Users\\" + Main.user + "\\Desktop\\ImageRecognition\\stockImages\\";
+    private final String stockDirPath = "C:\\Users\\" + Main.user + "\\Desktop\\ImageRecognition\\stockImages\\";
+    private final String borderDirPath = "C:\\Users\\" + Main.user + "\\Desktop\\ImageRecognition\\borderScreens\\";
+    private final String velocityDirPath = "C:\\Users\\" + Main.user + "\\Desktop\\ImageRecognition\\velocityScreens\\";
 
-    private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_S");
+    private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_SS");
 
-    private static BufferedImage invertImage(BufferedImage image) {
-
-        int width = image.getWidth();
-        int height = image.getHeight();
-        for (int x = 0; x < width; ++x) {
-            for (int y = 0; y < height; ++y) {
-                image.setRGB(x, y, -(image.getRGB(x, y)));
-            }
-        }
-        return image;
-    }
+    public static BufferedImage[] stockCache;
+    public static BufferedImage[] velocityCache;
+    public static BufferedImage[] borderCache;
+    public static String[] dateCache;
 
     public void takeStockScreenshot(int numbersOI) {
 
         BufferedImage bfStockImage = null;
 
-        for (int i = 1; i <= numbersOI; i++) {
+        //stockCache = new BufferedImage[numbersOI];
+        dateCache = new String[numbersOI];
+
+        for (int i = 0; i < numbersOI; i++) {
             try {
-                LocalDateTime now = LocalDateTime.now();
-                bfStockImage = new Robot().createScreenCapture(new Rectangle(0, 500, 1920, 500));
-                ImageIO.write(bfStockImage, "png", new File(stockImageDirPath + "screenshot_" + dtf.format(now) + ".png"));
-                System.out.println("Saved stock Image: " + i);
+                //LocalDateTime now = LocalDateTime.now();
+                dateCache[i] = dtf.format(LocalDateTime.now());
+                System.out.println("Date " + i + ": " + dateCache[i]);
+                stockCache[i] = new Robot().createScreenCapture(new Rectangle(0, 500, 1920, 500));
+                //ImageIO.write(bfStockImage, "png", new File(stockImageDirPath + "screenshot_" + dtf.format(now) + ".png"));
+                //System.out.println("Saved stock Image: " + i);
             } catch (Exception e) {
                 System.out.println("Could not save stockimage: " + i);
                 e.printStackTrace();
             }
         }
-        System.out.println("Finished recording all " + numbersOI + " Stockimages");
-        System.out.println(" ");
+
+        //System.out.println("Finished recording all " + numbersOI + " stockimages");
+        //System.out.println(" ");
 
     }
 
@@ -51,7 +51,21 @@ public class ScreenshotHandler {
         System.out.println(" ");
         System.out.println("Start cutting out the borderImages...");
 
+        //Folgender Code ist mit Caching beim Aufnehmen
 
+        if (stockCache != null) {
+            for (int i = 0; i < stockCache.length; i++) {
+                try {
+                    borderCache[i] = stockCache[i].getSubimage(0, 0, 1920, 180);  //bild zuschneiden auf richtige größe
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        //Folgender Code ist mit Speichern beim Aufnehmen
+
+        /*
         BufferedImage stockImage;
 
         File dir = new File(stockImageDirPath);
@@ -97,6 +111,8 @@ public class ScreenshotHandler {
 
         System.out.println("Finished cutting out the borderImages!");
 
+         */
+
     }
 
     public void cutoutVelocityImage() {
@@ -104,6 +120,22 @@ public class ScreenshotHandler {
         System.out.println(" ");
         System.out.println("Start cutting out the velocityImages...");
 
+        //Folgender Code ist mit Caching beim Aufnehmen
+
+        if (stockCache != null) {
+            for (int i = 0; i < stockCache.length; i++) {
+                try {
+                    velocityCache[i] = stockCache[i].getSubimage(750, 390, 450, 100);    //bild zuschneiden auf richtige größe;
+                    velocityCache[i] = invertImage(velocityCache[i]);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        //Folgender Code ist mit Speichern beim Aufnehmen
+
+        /*
         boolean faultyOperation = false;    //Wahrehitswert um ein erfolgreiches Speichern nachzuvollziehen (Initialisiert mit: Speichervorgang fehlgeschlagen)
 
         BufferedImage stockImage = null;
@@ -152,6 +184,41 @@ public class ScreenshotHandler {
         }
 
         System.out.println("Finished cutting out the velocityImages!");
+
+         */
+
+    }
+
+    private static BufferedImage invertImage(BufferedImage image) {
+
+        int width = image.getWidth();
+        int height = image.getHeight();
+        for (int x = 0; x < width; ++x) {
+            for (int y = 0; y < height; ++y) {
+                image.setRGB(x, y, -(image.getRGB(x, y)));
+            }
+        }
+        return image;
+    }
+
+    public void saveCachedImages() {
+
+        if (stockCache != null) {
+
+            for (int i = 0; i < stockCache.length; i++) {
+
+                try {
+                    ImageIO.write(stockCache[i], "png", new File(stockDirPath + "screenshot_" + dateCache[i] + ".png"));
+                    ImageIO.write(borderCache[i], "png", new File(borderDirPath + "screenshot_" + dateCache[i] + ".png"));
+                    ImageIO.write(velocityCache[i], "png", new File(velocityDirPath + "screenshot_" + dateCache[i] + ".png"));
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        }
 
     }
 
