@@ -14,13 +14,15 @@
     </properties>
 
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/net.java.dev.jna/jna -->
+    <!-- https://mvnrepository.com/artifact/net.sourceforge.tess4j/tess4j -->
         <dependency>
-            <groupId>net.java.dev.jna</groupId>
-            <artifactId>jna</artifactId>
-            <version>5.5.0</version>
+            <groupId>net.sourceforge.tess4j</groupId>
+            <artifactId>tess4j</artifactId>
+            <version>3.4.8</version>
         </dependency>
 
+
     </dependencies>
+
 
 </project>
